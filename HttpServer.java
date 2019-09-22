@@ -18,10 +18,37 @@ public class HttpServer{
 
 	public void start(){
 		try{
-			Socket s = server.accept();	
+			Socket s = server.accept();
+			Client client = new Client(s);
+			client.start();	
 		}
 		catch(Exception e){
 			e.printStackTrace();
+		}
+	}
+
+	private class Client{
+		private Socket client;
+		private PrintWriter out;
+		private BufferedReader in;
+
+		public Client(Socket s){
+			client = s;
+		}
+
+		public void start() throws IOException{
+			
+            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            out = new PrintWriter(client.getOutputStream());
+            BufferedOutputStream os = new BufferedOutputStream(client.getOutputStream());
+
+            
+        	String inputLine = in.readLine();
+           
+           
+            in.close();
+            out.close();
+            client.close();
 		}
 	}
 
