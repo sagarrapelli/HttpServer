@@ -3,16 +3,18 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.lang.String;
+import java.net.FileNameMap;
 
 public class HttpServer{
 
 	private ServerSocket server;
 	private Map<String, Integer> results;
+	private SimpleDateFormat date;
 
 	public HttpServer(){
 		try{
-			server = new ServerSocket(8080);
-			System.out.println("Server started at port 8080");
+			server = new ServerSocket(0);
+			System.out.println("Server started at " + InetAddress.getLocalHost().getCanonicalHostName() + ":" + server.getLocalPort());
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -20,7 +22,11 @@ public class HttpServer{
 	}
 
 	public void start(){
-	results = new HashMap<>();
+
+		results = new HashMap<>();
+		date = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+		date.setTimeZone(TimeZone.getTimeZone("GMT"));
+
 		try{
 			while(true){
 				Client c = new Client(server.accept());
@@ -39,6 +45,7 @@ public class HttpServer{
 		private BufferedReader in;
 		static final String root = "www";
 		String filename = null;
+		
 
 		public Client(Socket s){
 			client = s;
@@ -55,16 +62,14 @@ public class HttpServer{
 			BufferedOutputStream os = new BufferedOutputStream(client.getOutputStream());
 
 
-			SimpleDateFormat date = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
-			date.setTimeZone(TimeZone.getTimeZone("GMT"));
-
 			String inputLine = in.readLine();
 			StringTokenizer parse = new StringTokenizer(inputLine);
 			String method = parse.nextToken().toUpperCase();
 			filename = parse.nextToken().toLowerCase();
-			String content_type = getContentType(filename);
 
 			File myFile = new File (root, filename);
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+    		String content_type = fileNameMap.getContentTypeFor(myFile.getName());
 			byte [] mybytearray = new byte [(int)myFile.length()];
 
 			FileInputStream fileIn = new FileInputStream(myFile);
@@ -87,7 +92,7 @@ public class HttpServer{
 			os.flush();
 
 			int access_count = count(filename);
-			System.out.println (filename + "|" + IPAddress + "|" + port + "|" + access_count);
+			System.out.println (filename + "|" + IPAddress.toString().substring(1) + "|" + port + "|" + access_count);
 
 			}
 			catch (FileNotFoundException fnfe)
@@ -130,8 +135,8 @@ public class HttpServer{
 	private void fileNotFound(PrintWriter out, String file){
 	    //send file not found HTTP headers
 	    out.println("HTTP/1.0 404 File Not Found");
-	    out.println("Date: " + new Date());
-	    out.println("Server: Java HTTP Server 1.0");
+	    out.println("Date: " + date.format(new Date()));
+	    out.println("Server: Java HTTP Server from Sagar : 1.1");
 	    out.println("Content-Type: text/html");
 	    out.println();
 	    out.println("<HTML>");
@@ -144,16 +149,4 @@ public class HttpServer{
 	    out.flush();
   	}
 
-
-	public String getContentType(String s){
-		
-		if(s.endsWith(".html"))
-			return "text/html";
-		if(s.endsWith(".pdf"))
-			return "application/pdf";
-		if(s.endsWith(".gif"))
-			return "image/gif";
-		else
-			return "application/octet-stream";
-	}
 }
