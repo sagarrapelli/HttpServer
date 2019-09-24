@@ -7,6 +7,7 @@ import java.lang.String;
 public class HttpServer{
 
 	private ServerSocket server;
+	private Map<String, Integer> results;
 
 	public HttpServer(){
 		try{
@@ -44,6 +45,8 @@ public class HttpServer{
 
 		public void run() {
 			try{
+			InetAddress IPAddress = client.getInetAddress(); 
+			int port = client.getPort();
 
 			//https://docs.oracle.com/javase/tutorial/networking/sockets/readingWriting.html
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -55,7 +58,6 @@ public class HttpServer{
 			date.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 			String inputLine = in.readLine();
-			System.out.println(inputLine);
 			StringTokenizer parse = new StringTokenizer(inputLine);
 			String method = parse.nextToken().toUpperCase();
 			filename = parse.nextToken().toLowerCase();
@@ -83,6 +85,9 @@ public class HttpServer{
 			os.write(mybytearray,0,mybytearray.length);
 			os.flush();
 
+			int access_count = count(filename);
+			System.out.println (filename + "|" + IPAddress + "|" + port + "|" + c);
+
 			}
 			catch (FileNotFoundException fnfe)
 		    {
@@ -102,6 +107,18 @@ public class HttpServer{
 				}
 			}
 		}
+	}
+
+	synchronized public int count(String filename){
+		if (results.containsKey(filename)) { 
+ 			int c = results.get(filename);
+ 			results.put(filename,  c + 1); 
+ 			return (c+1) ;
+        } 
+        else { 
+  			results.put(filename, 1);
+  			return 1;
+        } 
 	}
 
 	public static void main(String[] args){
