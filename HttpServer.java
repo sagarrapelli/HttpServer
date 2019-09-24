@@ -20,6 +20,7 @@ public class HttpServer{
 	}
 
 	public void start(){
+	results = new HashMap<>();
 		try{
 			while(true){
 				Client c = new Client(server.accept());
@@ -86,7 +87,7 @@ public class HttpServer{
 			os.flush();
 
 			int access_count = count(filename);
-			System.out.println (filename + "|" + IPAddress + "|" + port + "|" + c);
+			System.out.println (filename + "|" + IPAddress + "|" + port + "|" + access_count);
 
 			}
 			catch (FileNotFoundException fnfe)
