@@ -118,6 +118,7 @@ public class Server{
 				}
 			}
 		}
+
 		private void fileNotFound(PrintWriter out, String file){
 		    //send file not found HTTP headers
 		    out.println("HTTP/1.1 404 Not Found");
@@ -134,6 +135,7 @@ public class Server{
 		    out.println("</HTML>");
 		    out.flush();
 	  	}
+	  	
 	}
 
 	synchronized public int count(String filename){

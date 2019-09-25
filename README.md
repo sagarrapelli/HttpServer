@@ -4,6 +4,7 @@
 1. Enter command 'make' to compile.
 2. Enter command 'java Server' to run the program
 
+
 #Implementation details
 
 I have implemented the program in Java using Java Socket programming. 
@@ -12,6 +13,7 @@ For reading/writing to and from the sockets I have refered from
 "https://docs.oracle.com/javase/tutorial/networking/sockets/index.html"
 
 A Server socket is created on an available port and it starts accepting client requests. When the server gets a new request from a client it creates a new thread to serve that client request and then it closes the connection. The server sends an error message 404 when it does not have the resource required.
+
 
 
 #Sample input/output on remote.cs machines.

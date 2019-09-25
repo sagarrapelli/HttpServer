@@ -6,8 +6,8 @@ JCC = javac
 #
 default: Server.class
 
-# this target entry builds the HttpServer class
-# the HttpServer.class file is dependent on the HttpServer.java file
+# this target entry builds the Server class
+# the Server.class file is dependent on the Server.java file
 # and the rule associated with this entry gives the command to create it
 #
 Server.class: Server.java
